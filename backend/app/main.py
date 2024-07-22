@@ -1,22 +1,13 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-
-class Item(BaseModel):
-    name: str
-    description: str
-    price: float
-    tax: float = None
+from app.api.endpoints import auth, users, posts, comments
 
 app = FastAPI()
+
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(posts.router, prefix="/posts", tags=["posts"])
+app.include_router(comments.router, prefix="/comments", tags=["comments"])
 
 @app.get("/")
 def read_root():
     return {"Hello": "Krishna!"}
-
-@app.post("/items/")
-def create_item(item:Item):
-    return item
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "q": q}
